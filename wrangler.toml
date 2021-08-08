@@ -1,0 +1,17 @@
+name = "counter"
+# type = "javascript" is required to use the `[build]` section
+type = "javascript"
+workers_dev = true
+account_id = "ae78534f6c5b673f97bbc5cea1850725"
+route = ""
+zone_id = ""
+
+[build.upload]
+# Upload the code directly from the src directory.
+dir = "src"
+# The "modules" upload format is required for all projects that export a Durable Objects class
+format = "modules"
+main = "./index.mjs"
+
+[durable_objects]
+bindings = [{name = "COUNTER", class_name = "Counter"}]
