@@ -43,6 +43,7 @@ export class Counter {
     await this.initializePromise;
 
     let { pathname } = new URL(request.url);
+    let currentCounter = this.counter;
 
     switch (pathname) {
       case "/increment":
@@ -52,22 +53,6 @@ export class Counter {
       case "/decrement":
         --this.counter;
         await this.state.storage.put("counter", this.counter);
-        break;
-      case "/double":
-        this.counter *= 2; 
-        await this.state.storage.put("counter", this.counter);
-        break;
-      case "/triple":
-        this.counter *= 3;
-        await this.state.storage.put("counter", this.counter);
-        break;
-      case "/i-am-a-teapot":
-        this.counter = 418; 
-        await this.state.storage.put("counter", this.counter); 
-        break;
-      case "/reset":
-        this.counter = 0; 
-        await this.state.storage.put("counter", this.counter); 
         break;
       case "/":
         // Just serve the current counter. No storage calls needed!

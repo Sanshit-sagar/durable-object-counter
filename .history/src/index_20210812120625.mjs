@@ -10,13 +10,12 @@ async function handleRequest(request, env) {
   const url = request.url;
   const { pathname } = new URL(url);
 
-  let id = env.COUNTER.idFromName(`test-drive`);
+  let id = env.COUNTER.idFromName(`${pathname}`);
   let obj = env.COUNTER.get(id);
-
   let resp = await obj.fetch(request.url);
   let count = await resp.text();
 
-  return new Response(`Durable Object ${pathname} has a count of: ${count}`);
+  return new Response(`Durable Object ${pathname} count: ` + count);
 }
 
 // Durable Object
@@ -43,39 +42,25 @@ export class Counter {
     await this.initializePromise;
 
     let { pathname } = new URL(request.url);
+    let currentCounter = this.count;
 
     switch (pathname) {
       case "/increment":
-        ++this.counter;
-        await this.state.storage.put("counter", this.counter);
+        currentCounter = ++this.value;
+        await this.state.storage.put("counter", this.value);
         break;
       case "/decrement":
-        --this.counter;
-        await this.state.storage.put("counter", this.counter);
-        break;
-      case "/double":
-        this.counter *= 2; 
-        await this.state.storage.put("counter", this.counter);
-        break;
-      case "/triple":
-        this.counter *= 3;
-        await this.state.storage.put("counter", this.counter);
-        break;
-      case "/i-am-a-teapot":
-        this.counter = 418; 
-        await this.state.storage.put("counter", this.counter); 
-        break;
-      case "/reset":
-        this.counter = 0; 
-        await this.state.storage.put("counter", this.counter); 
+        currentValue = --this.value;
+        await this.state.storage.put("counter", this.value);
         break;
       case "/":
-        // Just serve the current counter. No storage calls needed!
+        // Just serve the current value. No storage calls needed!
         break;
       default:
         return new Response("Not found", {status: 404});
     }
- 
-    return new Response(this.counter, {status: 200});
+
+    let responseBody = JSON.stringify({ currentValue, currentSessions }); 
+    return new Response(responseBody, {status: 200});
   }
 }

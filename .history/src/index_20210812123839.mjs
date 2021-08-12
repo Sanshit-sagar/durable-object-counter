@@ -62,12 +62,10 @@ export class Counter {
         await this.state.storage.put("counter", this.counter);
         break;
       case "/i-am-a-teapot":
-        this.counter = 418; 
-        await this.state.storage.put("counter", this.counter); 
+        await this.state.storage.put("counter", 418); 
         break;
       case "/reset":
-        this.counter = 0; 
-        await this.state.storage.put("counter", this.counter); 
+        await this.state.storage.put("counter", 0); 
         break;
       case "/":
         // Just serve the current counter. No storage calls needed!
